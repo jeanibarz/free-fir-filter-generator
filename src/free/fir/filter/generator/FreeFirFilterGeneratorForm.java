@@ -5,6 +5,9 @@
  */
 package free.fir.filter.generator;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author Jean
@@ -178,6 +181,11 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jMenuFile.add(jSeparator1);
 
         jMenuExit.setText("Exit");
+        jMenuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuExitActionPerformed(evt);
+            }
+        });
         jMenuFile.add(jMenuExit);
 
         jMenuBar1.add(jMenuFile);
@@ -222,8 +230,18 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxFilterTypeActionPerformed
 
     private void jMenuSaveFilterImpulseResponseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSaveFilterImpulseResponseActionPerformed
-        // TODO add your handling code here:
+        JFileChooser fs = new JFileChooser();
+        fs.setDialogTitle("Save filter impulse response");
+        fs.setFileFilter(new FileNameExtensionFilter("Text file (.txt)", ".txt"));
+        int result = fs.showSaveDialog(null);
+        if(result == JFileChooser.APPROVE_OPTION) {
+            // Save the file
+        }
     }//GEN-LAST:event_jMenuSaveFilterImpulseResponseActionPerformed
+
+    private void jMenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExitActionPerformed
+        super.dispose();
+    }//GEN-LAST:event_jMenuExitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -292,7 +310,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JSpinner jSpinner3;
     private javax.swing.JSpinner jSpinner4;
     private javax.swing.JSpinner jSpinner6;
