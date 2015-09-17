@@ -157,9 +157,11 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanelHighPass.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
 
         jLabelHighPassFc.setText("Highpass fc");
+        jLabelHighPassFc.setEnabled(false);
         jPanelHighPass.add(jLabelHighPassFc);
 
         jSpinnerHighPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerHighPassFc.setEnabled(false);
         jSpinnerHighPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerHighPassFcStateChanged(evt);
@@ -168,9 +170,11 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanelHighPass.add(jSpinnerHighPassFc);
 
         jLabelHighPassOrder.setText("Highpass order");
+        jLabelHighPassOrder.setEnabled(false);
         jPanelHighPass.add(jLabelHighPassOrder);
 
         jSpinnerHighPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(4), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerHighPassOrder.setEnabled(false);
         jPanelHighPass.add(jSpinnerHighPassOrder);
 
         jPanel4.add(jPanelHighPass);
@@ -178,9 +182,11 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanelLowPass.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
 
         jLabelLowPassFc.setText("Lowpass fc");
+        jLabelLowPassFc.setEnabled(false);
         jPanelLowPass.add(jLabelLowPassFc);
 
         jSpinnerLowPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(1.0d), null, Double.valueOf(1.0d)));
+        jSpinnerLowPassFc.setEnabled(false);
         jSpinnerLowPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerLowPassFcStateChanged(evt);
@@ -189,9 +195,11 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanelLowPass.add(jSpinnerLowPassFc);
 
         jLabelLowPassOrder.setText("Lowpass order");
+        jLabelLowPassOrder.setEnabled(false);
         jPanelLowPass.add(jLabelLowPassOrder);
 
         jSpinnerLowPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerLowPassOrder.setEnabled(false);
         jPanelLowPass.add(jSpinnerLowPassOrder);
 
         jPanel4.add(jPanelLowPass);
@@ -262,7 +270,26 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxSamplingFrequencyActionPerformed
 
     private void jComboBoxFilterTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFilterTypeActionPerformed
-        // TODO add your handling code here:
+        String filterTypeString = this.jComboBoxFilterType.getSelectedItem().toString().toLowerCase();
+        if(filterTypeString.contains("allpass")) {
+            setLowPassFilterEnabled(false);
+            setHighPassFilterEnabled(false);
+        }
+        else if(filterTypeString.contains("highpass")) {
+            setLowPassFilterEnabled(false);
+            setHighPassFilterEnabled(true);
+        }
+        else if(filterTypeString.contains("lowpass")) {
+            setLowPassFilterEnabled(true);
+            setHighPassFilterEnabled(false);
+        }
+        else if(filterTypeString.contains("bandpass")) {
+            setLowPassFilterEnabled(true);
+            setHighPassFilterEnabled(true);
+        }
+        else {
+            // Unknown filter type
+        }
     }//GEN-LAST:event_jComboBoxFilterTypeActionPerformed
 
     private void jMenuSaveFilterImpulseResponseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSaveFilterImpulseResponseActionPerformed
@@ -379,6 +406,20 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         // Set max fc values
         if(hpFcValue > fcMax) jSpinnerHighPassFc.setValue(fcMax);
         if(lpFcValue > fcMax) jSpinnerLowPassFc.setValue(fcMax);
+    }
+    
+    private void setLowPassFilterEnabled(boolean value) {
+        this.jSpinnerLowPassFc.setEnabled(value);
+        this.jSpinnerLowPassOrder.setEnabled(value);
+        this.jLabelLowPassFc.setEnabled(value);
+        this.jLabelLowPassOrder.setEnabled(value);
+    }
+    
+    private void setHighPassFilterEnabled(boolean value) {
+        this.jSpinnerHighPassFc.setEnabled(value);
+        this.jSpinnerHighPassOrder.setEnabled(value);
+        this.jLabelHighPassFc.setEnabled(value);
+        this.jLabelHighPassOrder.setEnabled(value);
     }
     
     /**
