@@ -7,6 +7,10 @@ package freefirfiltergenerator;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.FileWriter;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 /**
  *
@@ -62,7 +66,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelHighPassFc = new javax.swing.JLabel();
         jSpinnerHighPassFc = new javax.swing.JSpinner();
         jLabelHighPassOrder = new javax.swing.JLabel();
-        jSpinnerOrder = new javax.swing.JSpinner();
+        jSpinnerHighPassOrder = new javax.swing.JSpinner();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuSaveFilterImpulseResponse = new javax.swing.JMenuItem();
@@ -145,7 +149,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelLowPassFc.setText("Lowpass fc");
         jPanelLowPass.add(jLabelLowPassFc);
 
-        jSpinnerLowPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerLowPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(1.0d), null, Double.valueOf(1.0d)));
         jSpinnerLowPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerLowPassFcStateChanged(evt);
@@ -177,8 +181,8 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelHighPassOrder.setText("Highpass order");
         jPanelHighPass.add(jLabelHighPassOrder);
 
-        jSpinnerOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        jPanelHighPass.add(jSpinnerOrder);
+        jSpinnerHighPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(4), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jPanelHighPass.add(jSpinnerHighPassOrder);
 
         jPanel4.add(jPanelHighPass);
 
@@ -249,6 +253,55 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         int result = fs.showSaveDialog(null);
         if(result == JFileChooser.APPROVE_OPTION) {
             // Save the file
+            try {
+                    double[] impulse;
+                    double hpFc = (double)this.jSpinnerHighPassFc.getValue();
+                    double lpFc = (double)this.jSpinnerLowPassFc.getValue();
+                    int samplingRate = Integer.parseInt(this.jComboBoxSamplingFrequency.getSelectedItem().toString());
+                    int hpOrder = (int)this.jSpinnerHighPassOrder.getValue();
+                    int lpOrder = (int)this.jSpinnerLowPassOrder.getValue();
+                    
+                    int filterLength = (int)this.jSpinnerFilterLength.getValue();
+                    String filterTypeString = this.jComboBoxFilterType.getSelectedItem().toString().toLowerCase();
+                    if(filterTypeString.contains("lowpass")) {
+                        System.out.println("Saving lowpass filter :");
+                        System.out.println("Fc = " + lpFc + " hz");
+                        
+                        impulse = (new LowPassFilter(filterLength, samplingRate, lpFc, lpOrder)).getImpulse();
+                    }
+                    else if(filterTypeString.contains("highpass")) {
+                        impulse = (new HighPassFilter(filterLength, samplingRate, hpFc, hpOrder)).getImpulse();
+                    }
+                    else if(filterTypeString.contains("bandpass")) {
+                        impulse = (new BandPassFilter(filterLength, samplingRate, hpFc, hpOrder, lpFc, lpOrder)).getImpulse();
+                    }
+                    else {
+                        return;
+                    }
+                    
+                    File file = fs.getSelectedFile();
+                    if(!file.getName().contains(".")) {
+                        file = new File(fs.getSelectedFile() + ".txt");
+                    }
+                    
+                    // if file doesnt exists, then create it
+                    if (!file.exists()) {
+                            file.createNewFile();
+                    }
+
+                    FileWriter fw = new FileWriter(file.getAbsoluteFile());
+                    BufferedWriter bw = new BufferedWriter(fw);
+                    for(int i = 0; i < impulse.length; ++i) {
+                        bw.write(Double.toString(impulse[i]));
+                        bw.newLine();
+                    }
+                    bw.close();
+
+                    System.out.println("Done");
+
+            } catch (IOException e) {
+                    e.printStackTrace();
+            }
         }
     }//GEN-LAST:event_jMenuSaveFilterImpulseResponseActionPerformed
 
@@ -344,9 +397,9 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JSpinner jSpinnerFilterLength;
     private javax.swing.JSpinner jSpinnerHighPassFc;
+    private javax.swing.JSpinner jSpinnerHighPassOrder;
     private javax.swing.JSpinner jSpinnerLowPassFc;
     private javax.swing.JSpinner jSpinnerLowPassOrder;
-    private javax.swing.JSpinner jSpinnerOrder;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,10 +10,10 @@ package freefirfiltergenerator;
  * @author Jean
  */
 public class HighPassFilter extends Filter {
-    public HighPassFilter(int size, double lpFc, int lpOrder) {
+    public HighPassFilter(int size, int samplingRate, double hpFc, int hpOrder) {
         this.size = size;
-        this.hpFc = lpFc;
-        this.hpOrder = lpOrder;
+        this.hpFc = 2.0*hpFc/samplingRate;;
+        this.hpOrder = hpOrder;
     }
     
     public double[] getImpulse() {

@@ -295,7 +295,7 @@
             <Component class="javax.swing.JSpinner" name="jSpinnerLowPassFc">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel initial="0.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                  <SpinnerModel initial="1.0" minimum="1.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
                 </Property>
               </Properties>
               <Events>
@@ -345,10 +345,10 @@
                 <Property name="text" type="java.lang.String" value="Highpass order"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JSpinner" name="jSpinnerOrder">
+            <Component class="javax.swing.JSpinner" name="jSpinnerHighPassOrder">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                  <SpinnerModel initial="4" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
                 </Property>
               </Properties>
             </Component>

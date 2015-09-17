@@ -10,9 +10,9 @@ package freefirfiltergenerator;
  * @author Jean
  */
 public class LowPassFilter extends Filter {
-    public LowPassFilter(int size, double lpFc, int lpOrder) {
+    public LowPassFilter(int size, int samplingRate, double lpFc, int lpOrder) {
         this.size = size;
-        this.lpFc = lpFc;
+        this.lpFc = 2.0*lpFc/samplingRate;
         this.lpOrder = lpOrder;
     }
     

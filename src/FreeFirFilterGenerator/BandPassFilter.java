@@ -10,10 +10,12 @@ package freefirfiltergenerator;
  * @author Jean
  */
 public class BandPassFilter extends Filter {
-    public BandPassFilter(int size, double lpFc, int lpOrder) {
+    public BandPassFilter(int size, int samplingRate, double hpFc, int hpOrder, double lpFc, int lpOrder) {
         this.size = size;
-        this.hpFc = lpFc;
-        this.hpOrder = lpOrder;
+        this.hpFc = 2.0*hpFc/samplingRate;;
+        this.hpOrder = hpOrder;
+        this.lpFc = 2.0*lpFc/samplingRate;
+        this.lpOrder = lpOrder;
     }
     
     public double[] getImpulse() {
