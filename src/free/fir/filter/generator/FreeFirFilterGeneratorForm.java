@@ -62,7 +62,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelHighPassFc = new javax.swing.JLabel();
         jSpinnerHighPassFc = new javax.swing.JSpinner();
         jLabelHighPassOrder = new javax.swing.JLabel();
-        jSpinnerHighPassOrder = new javax.swing.JSpinner();
+        jSpinnerOrder = new javax.swing.JSpinner();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuSaveFilterImpulseResponse = new javax.swing.JMenuItem();
@@ -120,8 +120,6 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelFilterLength.setLabelFor(jSpinnerFilterLength);
         jLabelFilterLength.setText("Filter length");
         jPanel3.add(jLabelFilterLength);
-
-        jSpinnerFilterLength.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
         jPanel3.add(jSpinnerFilterLength);
 
         jLabel2.setText("samples");
@@ -146,6 +144,11 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanelLowPass.add(jLabelLowPassFc);
 
         jSpinnerLowPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerLowPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerLowPassFcStateChanged(evt);
+            }
+        });
         jPanelLowPass.add(jSpinnerLowPassFc);
 
         jLabelLowPassOrder.setText("Lowpass order");
@@ -162,13 +165,18 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanelHighPass.add(jLabelHighPassFc);
 
         jSpinnerHighPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerHighPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerHighPassFcStateChanged(evt);
+            }
+        });
         jPanelHighPass.add(jSpinnerHighPassFc);
 
         jLabelHighPassOrder.setText("Highpass order");
         jPanelHighPass.add(jLabelHighPassOrder);
 
-        jSpinnerHighPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        jPanelHighPass.add(jSpinnerHighPassOrder);
+        jSpinnerOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jPanelHighPass.add(jSpinnerOrder);
 
         jPanel4.add(jPanelHighPass);
 
@@ -245,6 +253,14 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private void jMenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExitActionPerformed
         super.dispose();
     }//GEN-LAST:event_jMenuExitActionPerformed
+
+    private void jSpinnerLowPassFcStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerLowPassFcStateChanged
+        checkFiltersMaxFcValues();
+    }//GEN-LAST:event_jSpinnerLowPassFcStateChanged
+
+    private void jSpinnerHighPassFcStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerHighPassFcStateChanged
+        checkFiltersMaxFcValues();
+    }//GEN-LAST:event_jSpinnerHighPassFcStateChanged
 
     private void checkFiltersMaxFcValues() {
         double hpFcValue = (double)jSpinnerHighPassFc.getValue();
@@ -326,9 +342,9 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JSpinner jSpinnerFilterLength;
     private javax.swing.JSpinner jSpinnerHighPassFc;
-    private javax.swing.JSpinner jSpinnerHighPassOrder;
     private javax.swing.JSpinner jSpinnerLowPassFc;
     private javax.swing.JSpinner jSpinnerLowPassOrder;
+    private javax.swing.JSpinner jSpinnerOrder;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
