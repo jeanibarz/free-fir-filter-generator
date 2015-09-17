@@ -268,6 +268,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
     private void jComboBoxSamplingFrequencyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSamplingFrequencyActionPerformed
         checkFiltersMaxFcValues();
+        setFilterLatencyValue();
     }//GEN-LAST:event_jComboBoxSamplingFrequencyActionPerformed
 
     private void jComboBoxFilterTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFilterTypeActionPerformed
@@ -376,10 +377,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jSpinnerHighPassFcStateChanged
 
     private void jSpinnerFilterLengthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerFilterLengthStateChanged
-        double samplingRate = Double.parseDouble(this.jComboBoxSamplingFrequency.getSelectedItem().toString());
-        int filterLength = (int)this.jSpinnerFilterLength.getValue();
-        double filterLatency = (filterLength-1.0)*1000.0/(2.0*samplingRate);
-        this.jLabelLatencyValue.setText(String.format("%1$,.4f", filterLatency));
+        setFilterLatencyValue();
     }//GEN-LAST:event_jSpinnerFilterLengthStateChanged
 
     private void jMenuFileStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jMenuFileStateChanged
@@ -407,6 +405,13 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         // Set max fc values
         if(hpFcValue > fcMax) jSpinnerHighPassFc.setValue(fcMax);
         if(lpFcValue > fcMax) jSpinnerLowPassFc.setValue(fcMax);
+    }
+    
+    private void setFilterLatencyValue() {
+        double samplingRate = Double.parseDouble(this.jComboBoxSamplingFrequency.getSelectedItem().toString());
+        int filterLength = (int)this.jSpinnerFilterLength.getValue();
+        double filterLatency = (filterLength-1.0)*1000.0/(2.0*samplingRate);
+        this.jLabelLatencyValue.setText(String.format("%1$,.4f", filterLatency));
     }
     
     private void setLowPassFilterEnabled(boolean value) {
