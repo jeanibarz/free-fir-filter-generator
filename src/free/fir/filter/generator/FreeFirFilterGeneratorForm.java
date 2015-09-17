@@ -7,7 +7,6 @@ package free.fir.filter.generator;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.SpinnerNumberModel;
 
 /**
  *
@@ -251,17 +250,10 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         double hpFcValue = (double)jSpinnerHighPassFc.getValue();
         double lpFcValue = (double)jSpinnerLowPassFc.getValue();
         double fcMax = Double.parseDouble(jComboBoxSamplingFrequency.getSelectedItem().toString())/2.0;
-        SpinnerNumberModel m;
         
-        // Set max value for high pass filter
-        m = (SpinnerNumberModel)jSpinnerHighPassFc.getModel();
+        // Set max fc values
         if(hpFcValue > fcMax) jSpinnerHighPassFc.setValue(fcMax);
-        m.setMaximum(fcMax);
-        
-        // Set max value for low pass filter
-        m = (SpinnerNumberModel)jSpinnerLowPassFc.getModel();
         if(lpFcValue > fcMax) jSpinnerLowPassFc.setValue(fcMax);
-        m.setMaximum(fcMax);
     }
     
     /**
