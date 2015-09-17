@@ -86,6 +86,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Free-FIR-Filter-Generator");
         setResizable(false);
 
         jPanel3.setLayout(new java.awt.GridLayout(5, 3, 10, 10));
@@ -213,7 +214,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         });
 
         jMenuSaveFilterImpulseResponse.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuSaveFilterImpulseResponse.setIcon(new javax.swing.ImageIcon(getClass().getResource("/FreeFirFilterGenerator/icons/save-as-icon20.png"))); // NOI18N
+        jMenuSaveFilterImpulseResponse.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save-as-icon20.png"))); // NOI18N
         jMenuSaveFilterImpulseResponse.setText("Save filter impulse response");
         jMenuSaveFilterImpulseResponse.setPreferredSize(new java.awt.Dimension(341, 24));
         jMenuSaveFilterImpulseResponse.addActionListener(new java.awt.event.ActionListener() {
