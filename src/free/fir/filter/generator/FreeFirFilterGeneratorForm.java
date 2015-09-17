@@ -7,6 +7,7 @@ package free.fir.filter.generator;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.SpinnerNumberModel;
 
 /**
  *
@@ -19,6 +20,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
      */
     public FreeFirFilterGeneratorForm() {
         initComponents();
+        checkFiltersMaxFcValues();
     }
 
     /**
@@ -52,16 +54,16 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelLatencyValue = new javax.swing.JLabel();
         jLabelLatencyUnit = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jSpinner4 = new javax.swing.JSpinner();
-        jLabel7 = new javax.swing.JLabel();
-        jSpinner3 = new javax.swing.JSpinner();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
-        jSpinner6 = new javax.swing.JSpinner();
-        jLabel16 = new javax.swing.JLabel();
-        jSpinner7 = new javax.swing.JSpinner();
+        jPanelLowPass = new javax.swing.JPanel();
+        jLabelLowPassFc = new javax.swing.JLabel();
+        jSpinnerLowPassFc = new javax.swing.JSpinner();
+        jLabelLowPassOrder = new javax.swing.JLabel();
+        jSpinnerLowPassOrder = new javax.swing.JSpinner();
+        jPanelHighPass = new javax.swing.JPanel();
+        jLabelHighPassFc = new javax.swing.JLabel();
+        jSpinnerHighPassFc = new javax.swing.JSpinner();
+        jLabelHighPassOrder = new javax.swing.JLabel();
+        jSpinnerHighPassOrder = new javax.swing.JSpinner();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuSaveFilterImpulseResponse = new javax.swing.JMenuItem();
@@ -119,6 +121,8 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelFilterLength.setLabelFor(jSpinnerFilterLength);
         jLabelFilterLength.setText("Filter length");
         jPanel3.add(jLabelFilterLength);
+
+        jSpinnerFilterLength.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
         jPanel3.add(jSpinnerFilterLength);
 
         jLabel2.setText("samples");
@@ -137,37 +141,37 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
         jPanel4.setLayout(new java.awt.GridLayout(1, 2, 10, 10));
 
-        jPanel1.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
+        jPanelLowPass.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
 
-        jLabel8.setText("Lowpass fc");
-        jPanel1.add(jLabel8);
+        jLabelLowPassFc.setText("Lowpass fc");
+        jPanelLowPass.add(jLabelLowPassFc);
 
-        jSpinner4.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
-        jPanel1.add(jSpinner4);
+        jSpinnerLowPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jPanelLowPass.add(jSpinnerLowPassFc);
 
-        jLabel7.setText("Lowpass order");
-        jPanel1.add(jLabel7);
+        jLabelLowPassOrder.setText("Lowpass order");
+        jPanelLowPass.add(jLabelLowPassOrder);
 
-        jSpinner3.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        jPanel1.add(jSpinner3);
+        jSpinnerLowPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jPanelLowPass.add(jSpinnerLowPassOrder);
 
-        jPanel4.add(jPanel1);
+        jPanel4.add(jPanelLowPass);
 
-        jPanel2.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
+        jPanelHighPass.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
 
-        jLabel15.setText("Highpass fc");
-        jPanel2.add(jLabel15);
+        jLabelHighPassFc.setText("Highpass fc");
+        jPanelHighPass.add(jLabelHighPassFc);
 
-        jSpinner6.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
-        jPanel2.add(jSpinner6);
+        jSpinnerHighPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jPanelHighPass.add(jSpinnerHighPassFc);
 
-        jLabel16.setText("Highpass order");
-        jPanel2.add(jLabel16);
+        jLabelHighPassOrder.setText("Highpass order");
+        jPanelHighPass.add(jLabelHighPassOrder);
 
-        jSpinner7.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        jPanel2.add(jSpinner7);
+        jSpinnerHighPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jPanelHighPass.add(jSpinnerHighPassOrder);
 
-        jPanel4.add(jPanel2);
+        jPanel4.add(jPanelHighPass);
 
         jMenuFile.setText("File");
 
@@ -222,7 +226,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jComboBoxSamplingFrequencyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSamplingFrequencyActionPerformed
-        // TODO add your handling code here:
+        checkFiltersMaxFcValues();
     }//GEN-LAST:event_jComboBoxSamplingFrequencyActionPerformed
 
     private void jComboBoxFilterTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFilterTypeActionPerformed
@@ -243,6 +247,23 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         super.dispose();
     }//GEN-LAST:event_jMenuExitActionPerformed
 
+    private void checkFiltersMaxFcValues() {
+        double hpFcValue = (double)jSpinnerHighPassFc.getValue();
+        double lpFcValue = (double)jSpinnerLowPassFc.getValue();
+        double fcMax = Double.parseDouble(jComboBoxSamplingFrequency.getSelectedItem().toString())/2.0;
+        SpinnerNumberModel m;
+        
+        // Set max value for high pass filter
+        m = (SpinnerNumberModel)jSpinnerHighPassFc.getModel();
+        if(hpFcValue > fcMax) jSpinnerHighPassFc.setValue(fcMax);
+        m.setMaximum(fcMax);
+        
+        // Set max value for low pass filter
+        m = (SpinnerNumberModel)jSpinnerLowPassFc.getModel();
+        if(lpFcValue > fcMax) jSpinnerLowPassFc.setValue(fcMax);
+        m.setMaximum(fcMax);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -287,16 +308,16 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JComboBox jComboBoxSamplingFrequency;
     private javax.swing.JComboBox jComboBoxWindowing;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelFilterLength;
     private javax.swing.JLabel jLabelFilterType;
+    private javax.swing.JLabel jLabelHighPassFc;
+    private javax.swing.JLabel jLabelHighPassOrder;
     private javax.swing.JLabel jLabelLatency;
     private javax.swing.JLabel jLabelLatencyUnit;
     private javax.swing.JLabel jLabelLatencyValue;
+    private javax.swing.JLabel jLabelLowPassFc;
+    private javax.swing.JLabel jLabelLowPassOrder;
     private javax.swing.JLabel jLabelSamplingFrequency;
     private javax.swing.JLabel jLabelWindowing;
     private javax.swing.JMenu jMenuAbout;
@@ -304,18 +325,18 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuExit;
     private javax.swing.JMenu jMenuFile;
     private javax.swing.JMenuItem jMenuSaveFilterImpulseResponse;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanelHighPass;
+    private javax.swing.JPanel jPanelLowPass;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JSpinner jSpinner3;
-    private javax.swing.JSpinner jSpinner4;
-    private javax.swing.JSpinner jSpinner6;
-    private javax.swing.JSpinner jSpinner7;
     private javax.swing.JSpinner jSpinnerFilterLength;
+    private javax.swing.JSpinner jSpinnerHighPassFc;
+    private javax.swing.JSpinner jSpinnerHighPassOrder;
+    private javax.swing.JSpinner jSpinnerLowPassFc;
+    private javax.swing.JSpinner jSpinnerLowPassOrder;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
