@@ -11,6 +11,11 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import javax.swing.text.DefaultFormatter;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.event.ChangeEvent;
+import java.text.ParseException;
 
 /**
  *
@@ -57,16 +62,16 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelLatencyValue = new javax.swing.JLabel();
         jLabelLatencyUnit = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
-        jPanelLowPass = new javax.swing.JPanel();
-        jLabelLowPassFc = new javax.swing.JLabel();
-        jSpinnerLowPassFc = new javax.swing.JSpinner();
-        jLabelLowPassOrder = new javax.swing.JLabel();
-        jSpinnerLowPassOrder = new javax.swing.JSpinner();
         jPanelHighPass = new javax.swing.JPanel();
         jLabelHighPassFc = new javax.swing.JLabel();
         jSpinnerHighPassFc = new javax.swing.JSpinner();
         jLabelHighPassOrder = new javax.swing.JLabel();
         jSpinnerHighPassOrder = new javax.swing.JSpinner();
+        jPanelLowPass = new javax.swing.JPanel();
+        jLabelLowPassFc = new javax.swing.JLabel();
+        jSpinnerLowPassFc = new javax.swing.JSpinner();
+        jLabelLowPassOrder = new javax.swing.JLabel();
+        jSpinnerLowPassOrder = new javax.swing.JSpinner();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuSaveFilterImpulseResponse = new javax.swing.JMenuItem();
@@ -126,6 +131,11 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanel3.add(jLabelFilterLength);
 
         jSpinnerFilterLength.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
+        jSpinnerFilterLength.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerFilterLengthStateChanged(evt);
+            }
+        });
         jPanel3.add(jSpinnerFilterLength);
 
         jLabel2.setText("samples");
@@ -143,27 +153,6 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanel3.add(jLabelLatencyUnit);
 
         jPanel4.setLayout(new java.awt.GridLayout(1, 2, 10, 10));
-
-        jPanelLowPass.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
-
-        jLabelLowPassFc.setText("Lowpass fc");
-        jPanelLowPass.add(jLabelLowPassFc);
-
-        jSpinnerLowPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(1.0d), null, Double.valueOf(1.0d)));
-        jSpinnerLowPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinnerLowPassFcStateChanged(evt);
-            }
-        });
-        jPanelLowPass.add(jSpinnerLowPassFc);
-
-        jLabelLowPassOrder.setText("Lowpass order");
-        jPanelLowPass.add(jLabelLowPassOrder);
-
-        jSpinnerLowPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        jPanelLowPass.add(jSpinnerLowPassOrder);
-
-        jPanel4.add(jPanelLowPass);
 
         jPanelHighPass.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
 
@@ -186,7 +175,33 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
         jPanel4.add(jPanelHighPass);
 
+        jPanelLowPass.setLayout(new java.awt.GridLayout(2, 0, 10, 10));
+
+        jLabelLowPassFc.setText("Lowpass fc");
+        jPanelLowPass.add(jLabelLowPassFc);
+
+        jSpinnerLowPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(1.0d), null, Double.valueOf(1.0d)));
+        jSpinnerLowPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerLowPassFcStateChanged(evt);
+            }
+        });
+        jPanelLowPass.add(jSpinnerLowPassFc);
+
+        jLabelLowPassOrder.setText("Lowpass order");
+        jPanelLowPass.add(jLabelLowPassOrder);
+
+        jSpinnerLowPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jPanelLowPass.add(jSpinnerLowPassOrder);
+
+        jPanel4.add(jPanelLowPass);
+
         jMenuFile.setText("File");
+        jMenuFile.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jMenuFileStateChanged(evt);
+            }
+        });
 
         jMenuSaveFilterImpulseResponse.setText("Save filter impulse response");
         jMenuSaveFilterImpulseResponse.addActionListener(new java.awt.event.ActionListener() {
@@ -317,11 +332,35 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         checkFiltersMaxFcValues();
     }//GEN-LAST:event_jSpinnerHighPassFcStateChanged
 
+    private void jSpinnerFilterLengthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerFilterLengthStateChanged
+        double samplingRate = Double.parseDouble(this.jComboBoxSamplingFrequency.getSelectedItem().toString());
+        int filterLength = (int)this.jSpinnerFilterLength.getValue();
+        double filterLatency = (filterLength-1.0)*1000.0/(2.0*samplingRate);
+        this.jLabelLatencyValue.setText(String.format("%1$,.4f", filterLatency));
+    }//GEN-LAST:event_jSpinnerFilterLengthStateChanged
+
+    private void jMenuFileStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jMenuFileStateChanged
+        try {
+            this.jSpinnerFilterLength.commitEdit();
+            this.jSpinnerHighPassFc.commitEdit();
+            this.jSpinnerHighPassOrder.commitEdit();
+            this.jSpinnerLowPassFc.commitEdit();
+            this.jSpinnerLowPassOrder.commitEdit();
+        }
+        catch(ParseException e) {
+            
+        }
+    }//GEN-LAST:event_jMenuFileStateChanged
+
     private void checkFiltersMaxFcValues() {
         double hpFcValue = (double)jSpinnerHighPassFc.getValue();
         double lpFcValue = (double)jSpinnerLowPassFc.getValue();
         double fcMax = Double.parseDouble(jComboBoxSamplingFrequency.getSelectedItem().toString())/2.0;
-        
+        /*JComponent comp = this.jSpinnerFilterLength.getEditor();
+        JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
+        DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
+        formatter.setCommitsOnValidEdit(true);*/
+    
         // Set max fc values
         if(hpFcValue > fcMax) jSpinnerHighPassFc.setValue(fcMax);
         if(lpFcValue > fcMax) jSpinnerLowPassFc.setValue(fcMax);
