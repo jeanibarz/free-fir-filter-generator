@@ -197,13 +197,17 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanel4.add(jPanelLowPass);
 
         jMenuFile.setText("File");
+        jMenuFile.setDelay(10);
         jMenuFile.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jMenuFileStateChanged(evt);
             }
         });
 
+        jMenuSaveFilterImpulseResponse.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuSaveFilterImpulseResponse.setIcon(new javax.swing.ImageIcon(getClass().getResource("/FreeFirFilterGenerator/icons/save-as-icon20.png"))); // NOI18N
         jMenuSaveFilterImpulseResponse.setText("Save filter impulse response");
+        jMenuSaveFilterImpulseResponse.setPreferredSize(new java.awt.Dimension(341, 24));
         jMenuSaveFilterImpulseResponse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuSaveFilterImpulseResponseActionPerformed(evt);
@@ -262,6 +266,17 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxFilterTypeActionPerformed
 
     private void jMenuSaveFilterImpulseResponseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSaveFilterImpulseResponseActionPerformed
+        try {
+            this.jSpinnerFilterLength.commitEdit();
+            this.jSpinnerHighPassFc.commitEdit();
+            this.jSpinnerHighPassOrder.commitEdit();
+            this.jSpinnerLowPassFc.commitEdit();
+            this.jSpinnerLowPassOrder.commitEdit();
+        }
+        catch(ParseException e) {
+            
+        }
+        
         JFileChooser fs = new JFileChooser();
         fs.setDialogTitle("Save filter impulse response");
         fs.setFileFilter(new FileNameExtensionFilter("Text file (.txt)", ".txt"));
