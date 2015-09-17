@@ -120,6 +120,8 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelFilterLength.setLabelFor(jSpinnerFilterLength);
         jLabelFilterLength.setText("Filter length");
         jPanel3.add(jLabelFilterLength);
+
+        jSpinnerFilterLength.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
         jPanel3.add(jSpinnerFilterLength);
 
         jLabel2.setText("samples");
