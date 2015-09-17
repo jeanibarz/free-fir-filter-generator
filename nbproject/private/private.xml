@@ -3,8 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/Free-FIR-Filter-Generator/src/free/fir/filter/generator/FreeFIRFilterGenerator.java</file>
-            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/Free-FIR-Filter-Generator/src/free/fir/filter/generator/FreeFirFilterGeneratorForm.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/Free-FIR-Filter-Generator/src/FreeFirFilterGenerator/HighPassFilter.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/Free-FIR-Filter-Generator/src/FreeFirFilterGenerator/FreeFirFilterGeneratorForm.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/Free-FIR-Filter-Generator/src/FreeFirFilterGenerator/Filter.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/Free-FIR-Filter-Generator/src/FreeFirFilterGenerator/FreeFIRFilterGenerator.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/Free-FIR-Filter-Generator/src/FreeFirFilterGenerator/BandPassFilter.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/Free-FIR-Filter-Generator/src/FreeFirFilterGenerator/LowPassFilter.java</file>
         </group>
     </open-files>
 </project-private>

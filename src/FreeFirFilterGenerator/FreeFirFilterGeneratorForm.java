@@ -118,7 +118,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelFilterType.setText("Filter type");
         jPanel3.add(jLabelFilterType);
 
-        jComboBoxFilterType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Allpass", "Lowpass", "Highpass", "Bandpass" }));
+        jComboBoxFilterType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Allpass", "Lowpass (Linkwitz-Riley)", "Highpass (Linkwitz-Riley)", "Bandpass (Linkwitz-Riley)" }));
         jComboBoxFilterType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxFilterTypeActionPerformed(evt);
