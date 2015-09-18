@@ -111,7 +111,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelWindowing.setText("Windowing");
         jPanel3.add(jLabelWindowing);
 
-        jComboBoxWindowing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Rectangular (none)" }));
+        jComboBoxWindowing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Rectangular (none)", "Triangular", "Welch", "Hanning", "Hamming", "Blackman", "Nuttall", "Blackman-Nuttall", "Blackman-Harris", "Flat top", "Gaussian*", "Tukey*", "Planck-Taper*", "DPSS/Slepian*", "Kaiser*", "Dolph–Chebyshev*", "Ultraspherical*", "Exponential/Poisson*", "Bartlett–Hann*", "Planck–Bessel*", "Hann-Poisson*", "Sinc/Lanczos*", " " }));
         jPanel3.add(jComboBoxWindowing);
 
         jSpinnerWindowParam.setModel(new javax.swing.SpinnerNumberModel(0.5d, 0.0d, 1.0d, 0.05d));
@@ -353,11 +353,8 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
                     else if(windowTypeString.contains("triangular")) {
                         window = Window.triangular(impulse.length);
                     }
-                    else if(windowTypeString.contains("parzen")) {
-                        window = Window.parzen(impulse.length);
-                    }
-                    else if(windowTypeString.contains("triangular")) {
-                        window = Window.triangular(impulse.length);
+                    else if(windowTypeString.contains("welch")) {
+                        window = Window.welch(impulse.length);
                     }
                     else if(windowTypeString.contains("hanning")) {
                         window = Window.hanning(impulse.length);
@@ -366,18 +363,20 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
                         window = Window.hamming(impulse.length);
                     }
                     else if(windowTypeString.contains("blackman")) {
-                        window = Window.blackman(impulse.length);
+                        if(windowTypeString.contains("nuttall")) {
+                            window = Window.blackman_nuttall(impulse.length);
+                        }
+                        else if(windowTypeString.contains("harris")) {
+                            window = Window.blackman_harris(impulse.length);
+                        }
+                        else {
+                            window = Window.blackman(impulse.length);
+                        }
                     }
                     else if(windowTypeString.contains("nuttall")) {
                         window = Window.nuttall(impulse.length);
                     }
-                    else if(windowTypeString.contains("blackman_nuttall")) {
-                        window = Window.blackman_nuttall(impulse.length);
-                    }
-                    else if(windowTypeString.contains("blackman_harris")) {
-                        window = Window.blackman_harris(impulse.length);
-                    }
-                    else if(windowTypeString.contains("flat_top")) {
+                    else if(windowTypeString.contains("flat top")) {
                         window = Window.flat_top(impulse.length);
                     }
                     else if(windowTypeString.contains("gaussian")) {
@@ -387,7 +386,14 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
                         window = Window.tukey(impulse.length, (double)this.jSpinnerWindowParam.getValue());
                     }
                     else {
-                        // Unknown window
+                        window = new double[impulse.length];
+                        for(int i = 0; i < impulse.length; i++) {
+                            window[i] = 0.0;
+                        }
+                    }
+                    
+                    for(int i = 0; i < impulse.length; i++) {
+                        impulse[i] *= window[i];
                     }
                     
                     File file = fs.getSelectedFile();
