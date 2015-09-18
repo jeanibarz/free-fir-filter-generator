@@ -193,8 +193,30 @@
         <Component class="javax.swing.JComboBox" name="jComboBoxWindowing">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="1">
+              <StringArray count="23">
                 <StringItem index="0" value="Rectangular (none)"/>
+                <StringItem index="1" value="Triangular"/>
+                <StringItem index="2" value="Welch"/>
+                <StringItem index="3" value="Hanning"/>
+                <StringItem index="4" value="Hamming"/>
+                <StringItem index="5" value="Blackman"/>
+                <StringItem index="6" value="Nuttall"/>
+                <StringItem index="7" value="Blackman-Nuttall"/>
+                <StringItem index="8" value="Blackman-Harris"/>
+                <StringItem index="9" value="Flat top"/>
+                <StringItem index="10" value="Gaussian*"/>
+                <StringItem index="11" value="Tukey*"/>
+                <StringItem index="12" value="Planck-Taper*"/>
+                <StringItem index="13" value="DPSS/Slepian*"/>
+                <StringItem index="14" value="Kaiser*"/>
+                <StringItem index="15" value="Dolph&#x2013;Chebyshev*"/>
+                <StringItem index="16" value="Ultraspherical*"/>
+                <StringItem index="17" value="Exponential/Poisson*"/>
+                <StringItem index="18" value="Bartlett&#x2013;Hann*"/>
+                <StringItem index="19" value="Planck&#x2013;Bessel*"/>
+                <StringItem index="20" value="Hann-Poisson*"/>
+                <StringItem index="21" value="Sinc/Lanczos*"/>
+                <StringItem index="22" value=" "/>
               </StringArray>
             </Property>
           </Properties>

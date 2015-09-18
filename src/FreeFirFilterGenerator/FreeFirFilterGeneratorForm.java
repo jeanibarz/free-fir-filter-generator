@@ -110,7 +110,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jLabelWindowing.setText("Windowing");
         jPanel3.add(jLabelWindowing);
 
-        jComboBoxWindowing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Rectangular (none)" }));
+        jComboBoxWindowing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Rectangular (none)", "Triangular", "Welch", "Hanning", "Hamming", "Blackman", "Nuttall", "Blackman-Nuttall", "Blackman-Harris", "Flat top", "Gaussian*", "Tukey*", "Planck-Taper*", "DPSS/Slepian*", "Kaiser*", "Dolph–Chebyshev*", "Ultraspherical*", "Exponential/Poisson*", "Bartlett–Hann*", "Planck–Bessel*", "Hann-Poisson*", "Sinc/Lanczos*", " " }));
         jPanel3.add(jComboBoxWindowing);
         jPanel3.add(filler3);
 
