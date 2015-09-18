@@ -45,13 +45,14 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPopupMenu1 = new javax.swing.JPopupMenu();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jComboBox1 = new javax.swing.JComboBox();
+        jSpinner1 = new javax.swing.JSpinner();
         jPanel3 = new javax.swing.JPanel();
         jLabelSamplingFrequency = new javax.swing.JLabel();
         jComboBoxSamplingFrequency = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jLabelWindowing = new javax.swing.JLabel();
         jComboBoxWindowing = new javax.swing.JComboBox();
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        jSpinnerWindowParam = new javax.swing.JSpinner();
         jLabelFilterType = new javax.swing.JLabel();
         jComboBoxFilterType = new javax.swing.JComboBox();
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -112,7 +113,10 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
         jComboBoxWindowing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Rectangular (none)" }));
         jPanel3.add(jComboBoxWindowing);
-        jPanel3.add(filler3);
+
+        jSpinnerWindowParam.setModel(new javax.swing.SpinnerNumberModel(0.5d, 0.0d, 1.0d, 0.05d));
+        jSpinnerWindowParam.setEnabled(false);
+        jPanel3.add(jSpinnerWindowParam);
 
         jLabelFilterType.setLabelFor(jComboBoxFilterType);
         jLabelFilterType.setText("Filter type");
@@ -338,6 +342,54 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
                         return;
                     }
                     
+                    // Apply window if needed
+                    String windowTypeString = this.jComboBoxWindowing.getSelectedItem().toString().toLowerCase();
+                    
+                    double[] window;
+                    
+                    if(windowTypeString.contains("rectangular")) {
+                        window = Window.rectangular(impulse.length);
+                    }
+                    else if(windowTypeString.contains("triangular")) {
+                        window = Window.triangular(impulse.length);
+                    }
+                    else if(windowTypeString.contains("parzen")) {
+                        window = Window.parzen(impulse.length);
+                    }
+                    else if(windowTypeString.contains("triangular")) {
+                        window = Window.triangular(impulse.length);
+                    }
+                    else if(windowTypeString.contains("hanning")) {
+                        window = Window.hanning(impulse.length);
+                    }
+                    else if(windowTypeString.contains("hamming")) {
+                        window = Window.hamming(impulse.length);
+                    }
+                    else if(windowTypeString.contains("blackman")) {
+                        window = Window.blackman(impulse.length);
+                    }
+                    else if(windowTypeString.contains("nuttall")) {
+                        window = Window.nuttall(impulse.length);
+                    }
+                    else if(windowTypeString.contains("blackman_nuttall")) {
+                        window = Window.blackman_nuttall(impulse.length);
+                    }
+                    else if(windowTypeString.contains("blackman_harris")) {
+                        window = Window.blackman_harris(impulse.length);
+                    }
+                    else if(windowTypeString.contains("flat_top")) {
+                        window = Window.flat_top(impulse.length);
+                    }
+                    else if(windowTypeString.contains("gaussian")) {
+                        window = Window.gaussian(impulse.length, (double)this.jSpinnerWindowParam.getValue());
+                    }
+                    else if(windowTypeString.contains("tukey")) {
+                        window = Window.tukey(impulse.length, (double)this.jSpinnerWindowParam.getValue());
+                    }
+                    else {
+                        // Unknown window
+                    }
+                    
                     File file = fs.getSelectedFile();
                     if(!file.getName().contains(".")) {
                         file = new File(fs.getSelectedFile() + ".txt");
@@ -465,7 +517,6 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBoxFilterType;
@@ -496,11 +547,13 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JSpinner jSpinnerFilterLength;
     private javax.swing.JSpinner jSpinnerHighPassFc;
     private javax.swing.JSpinner jSpinnerHighPassOrder;
     private javax.swing.JSpinner jSpinnerLowPassFc;
     private javax.swing.JSpinner jSpinnerLowPassOrder;
+    private javax.swing.JSpinner jSpinnerWindowParam;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
