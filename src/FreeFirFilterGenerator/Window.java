@@ -10,6 +10,16 @@ package freefirfiltergenerator;
  * @author Jean
  */
 public class Window {    
+    public static double[] rectangular(int n) {
+        double[] window = new double[n];
+        
+        for(int i = 0; i < n; i++) {
+            window[i] = 1.0;
+        }
+        
+        return window;
+    }
+    
     public static double[] triangular(int n) {
         double[] window = new double[n];
         
@@ -21,12 +31,12 @@ public class Window {
         return window;
     }
     
-    public static double[] parzen(int n) {
+    public static double[] welch(int n) {
         double[] window = new double[n];
         
         final double k = (n-1.0)/2.0;
         for(int i = 0; i < n; i++) {
-            window[i] = 1 - ( (n-k)*(n-k)/(k*k) );
+            window[i] = 1 - ( (i-k)*(i-k)/(k*k) );
         }
         
         return window;
