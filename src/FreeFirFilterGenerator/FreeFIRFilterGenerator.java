@@ -16,6 +16,11 @@ public class FreeFIRFilterGenerator {
      */
     public static void main(String[] args) {
         FreeFirFilterGeneratorForm mainForm = new FreeFirFilterGeneratorForm();
+
+        double[] w = freefirfiltergenerator.Window.triangular(10);
+        
+        for(int i = 0; i < w.length; i++) System.out.println("W[" + i + "]=" + w[i]);
+        
         mainForm.setVisible(true);
     }
     
