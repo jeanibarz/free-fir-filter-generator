@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package FreeFirFilterGenerator.Filter;
-
+import edu.emory.mathcs.jtransforms.fft.*;
+        
 /**
  *
  * @author Jean
@@ -28,13 +29,13 @@ public class BandPassFilter extends Filter {
         // the response is not symetric). I consider in this case an n+1 signal and
         // then I can perform the IFFT with this odd signal. I truncate the last sample
         // to get the temporal signal I should have obtained normally.
-        org.jtransforms.fft.DoubleFFT_1D fft;
+        DoubleFFT_1D fft;
         double mag[], arg[], fftBuffer[];
         int n = this.size;
         boolean even = (n%2 == 0);
         if(even) n += 1;
         
-        fft = new org.jtransforms.fft.DoubleFFT_1D(n);
+        fft = new DoubleFFT_1D(n);
         
         mag = new double[(n/2)+1];
         arg = new double[(n/2)+1];
