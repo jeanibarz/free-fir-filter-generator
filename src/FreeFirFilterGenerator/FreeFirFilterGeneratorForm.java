@@ -5,29 +5,68 @@
  */
 package freefirfiltergenerator;
 
+import FreeFirFilterGenerator.Filter.BandPassFilter;
+import FreeFirFilterGenerator.Filter.FilterTypeEnum;
+import FreeFirFilterGenerator.Filter.LowPassFilter;
+import FreeFirFilterGenerator.Filter.HighPassFilter;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import javax.swing.text.DefaultFormatter;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.event.ChangeEvent;
 import java.text.ParseException;
+import java.util.Vector;
+import java.util.prefs.Preferences;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
 
 /**
  *
  * @author Jean
  */
 public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
-
+    private final Preferences prefs = Preferences.userRoot();
+    private Vector<String> windowsList = new Vector<>(0);
+    
+    public static boolean DEBUG_MODE = false;
     /**
      * Creates new form FreeFirFilterGeneratorForm
      */
     public FreeFirFilterGeneratorForm() {
+        if(DEBUG_MODE) System.out.println("Launching...");
+        
+        windowsList.add("Rectangular (none)");
+        windowsList.add("Triangular");
+        windowsList.add("Welch");
+        windowsList.add("Hanning");
+        windowsList.add("Hamming");
+        windowsList.add("Blackman");
+        windowsList.add("Nuttall");
+        windowsList.add("Blackman-Nuttall");
+        windowsList.add("Blackman-Harris");
+        windowsList.add("Flat top");
+        
+        if(DEBUG_MODE) {
+            windowsList.add("Gaussian*");
+            windowsList.add("Tukey*");
+            windowsList.add("-Planck-Taper*");
+            windowsList.add("-DPSS/Slepian*");
+            windowsList.add("-Kaiser*");
+            windowsList.add("-Dolph–Chebyshev*");
+            windowsList.add("-Ultraspherical*");
+            windowsList.add("-Exponential/Poisson*");
+            windowsList.add("-Bartlett–Hann*");
+            windowsList.add("-Planck–Bessel*");
+            windowsList.add("-Hann-Poisson*");
+            windowsList.add("-Sinc/Lanczos*");
+        }
+        
         initComponents();
+        loadSettings();
         checkFiltersMaxFcValues();
     }
 
@@ -72,13 +111,16 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabelFilterLength = new javax.swing.JLabel();
         jSpinnerFilterLength = new javax.swing.JSpinner();
-        jButton1 = new javax.swing.JButton();
+        jCheckBoxFilterLength = new javax.swing.JCheckBox();
         jLabelLatency1 = new javax.swing.JLabel();
-        jSpinnerFilterLength1 = new javax.swing.JSpinner();
-        jButton2 = new javax.swing.JButton();
+        jSpinnerFilterGroupDelay = new javax.swing.JSpinner();
+        jCheckBoxFilterGroupDelay = new javax.swing.JCheckBox();
         jLabelLatency = new javax.swing.JLabel();
-        jLabelLatencyValue = new javax.swing.JLabel();
+        jLabelConvolutionLatencyValue = new javax.swing.JLabel();
         jLabelLatencyUnit = new javax.swing.JLabel();
+        jLabelLatency2 = new javax.swing.JLabel();
+        jLabelTotalLatencyValue = new javax.swing.JLabel();
+        jLabelLatencyUnit1 = new javax.swing.JLabel();
         jLabelWindowing = new javax.swing.JLabel();
         jComboBoxWindowing = new javax.swing.JComboBox();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -90,6 +132,8 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jMenuSaveFilterImpulseResponse = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuExit = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenuAbout = new javax.swing.JMenu();
 
         jTextArea1.setColumns(20);
@@ -101,6 +145,11 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Free-FIR-Filter-Generator");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel3.setLayout(new java.awt.GridLayout(2, 3, 10, 10));
 
@@ -109,6 +158,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanel3.add(jLabelSamplingFrequency);
 
         jComboBoxSamplingFrequency.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "44100", "48000", "88200", "96000", "192000" }));
+        jComboBoxSamplingFrequency.setNextFocusableComponent(jComboBoxFilterType1);
         jComboBoxSamplingFrequency.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxSamplingFrequencyActionPerformed(evt);
@@ -124,6 +174,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanel3.add(jLabelFilterType);
 
         jComboBoxFilterType1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Allpass", "Lowpass", "Highpass", "Bandpass" }));
+        jComboBoxFilterType1.setNextFocusableComponent(jComboBoxFilterType2);
         jComboBoxFilterType1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxFilterType1ActionPerformed(evt);
@@ -132,6 +183,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jPanel3.add(jComboBoxFilterType1);
 
         jComboBoxFilterType2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Linkwitz-Riley", "Butterworth" }));
+        jComboBoxFilterType2.setNextFocusableComponent(jSpinnerHighPassFc);
         jComboBoxFilterType2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxFilterType2ActionPerformed(evt);
@@ -149,6 +201,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
         jSpinnerHighPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(1.0d), null, Double.valueOf(1.0d)));
         jSpinnerHighPassFc.setEnabled(false);
+        jSpinnerHighPassFc.setNextFocusableComponent(jSpinnerLowPassFc);
         jSpinnerHighPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerHighPassFcStateChanged(evt);
@@ -162,14 +215,16 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
         jSpinnerHighPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         jSpinnerHighPassOrder.setEnabled(false);
+        jSpinnerHighPassOrder.setNextFocusableComponent(jSpinnerLowPassOrder);
         jPanelHighPass.add(jSpinnerHighPassOrder);
 
-        jLabelHighPassFilterPhase.setText("Filter phase");
+        jLabelHighPassFilterPhase.setText("Highpass phase");
         jLabelHighPassFilterPhase.setEnabled(false);
         jPanelHighPass.add(jLabelHighPassFilterPhase);
 
         jComboBoxHighPassFilterPhase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Linear", "Minimal" }));
         jComboBoxHighPassFilterPhase.setEnabled(false);
+        jComboBoxHighPassFilterPhase.setNextFocusableComponent(jComboBoxLowPassFilterPhase);
         jPanelHighPass.add(jComboBoxHighPassFilterPhase);
 
         jPanel4.add(jPanelHighPass);
@@ -183,6 +238,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
         jSpinnerLowPassFc.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(1.0d), null, Double.valueOf(1.0d)));
         jSpinnerLowPassFc.setEnabled(false);
+        jSpinnerLowPassFc.setNextFocusableComponent(jSpinnerHighPassOrder);
         jSpinnerLowPassFc.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerLowPassFcStateChanged(evt);
@@ -196,66 +252,98 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
         jSpinnerLowPassOrder.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         jSpinnerLowPassOrder.setEnabled(false);
+        jSpinnerLowPassOrder.setNextFocusableComponent(jComboBoxHighPassFilterPhase);
         jPanelLowPass.add(jSpinnerLowPassOrder);
 
-        jLabelLowPassFilterPhase.setText("Filter phase");
+        jLabelLowPassFilterPhase.setText("Lowpass phase");
         jLabelLowPassFilterPhase.setEnabled(false);
         jPanelLowPass.add(jLabelLowPassFilterPhase);
 
         jComboBoxLowPassFilterPhase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Linear", "Minimal" }));
         jComboBoxLowPassFilterPhase.setEnabled(false);
+        jComboBoxLowPassFilterPhase.setNextFocusableComponent(jSpinnerFilterLength);
         jPanelLowPass.add(jComboBoxLowPassFilterPhase);
 
         jPanel4.add(jPanelLowPass);
 
-        jPanel1.setLayout(new java.awt.GridLayout(5, 3));
+        jPanel1.setLayout(new java.awt.GridLayout(6, 3));
 
         jLabelFilterLength.setLabelFor(jSpinnerFilterLength);
         jLabelFilterLength.setText("Filter length (in samples)");
         jPanel1.add(jLabelFilterLength);
 
         jSpinnerFilterLength.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
+        jSpinnerFilterLength.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSpinnerFilterLength.setNextFocusableComponent(jSpinnerFilterGroupDelay);
         jSpinnerFilterLength.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerFilterLengthStateChanged(evt);
             }
         });
-        jPanel1.add(jSpinnerFilterLength);
-
-        jButton1.setText("Auto suggest");
-        jPanel1.add(jButton1);
-
-        jLabelLatency1.setLabelFor(jLabelLatencyValue);
-        jLabelLatency1.setText("Fiilter group delay (in samples)");
-        jPanel1.add(jLabelLatency1);
-
-        jSpinnerFilterLength1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
-        jSpinnerFilterLength1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinnerFilterLength1StateChanged(evt);
+        jSpinnerFilterLength.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jSpinnerFilterLengthFocusGained(evt);
             }
         });
-        jPanel1.add(jSpinnerFilterLength1);
+        jPanel1.add(jSpinnerFilterLength);
 
-        jButton2.setText("Auto suggest");
-        jPanel1.add(jButton2);
+        jCheckBoxFilterLength.setText("auto suggest");
+        jCheckBoxFilterLength.setEnabled(false);
+        jPanel1.add(jCheckBoxFilterLength);
 
-        jLabelLatency.setLabelFor(jLabelLatencyValue);
-        jLabelLatency.setText("Signal delay estimation");
+        jLabelLatency1.setLabelFor(jLabelConvolutionLatencyValue);
+        jLabelLatency1.setText("Filter group delay (in samples)");
+        jPanel1.add(jLabelLatency1);
+
+        jSpinnerFilterGroupDelay.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerFilterGroupDelay.setNextFocusableComponent(jComboBoxWindowing);
+        jSpinnerFilterGroupDelay.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerFilterGroupDelayStateChanged(evt);
+            }
+        });
+        jSpinnerFilterGroupDelay.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jSpinnerFilterGroupDelayFocusGained(evt);
+            }
+        });
+        jPanel1.add(jSpinnerFilterGroupDelay);
+
+        jCheckBoxFilterGroupDelay.setText("auto suggest");
+        jPanel1.add(jCheckBoxFilterGroupDelay);
+
+        jLabelLatency.setLabelFor(jLabelConvolutionLatencyValue);
+        jLabelLatency.setText("Convolution latency");
         jPanel1.add(jLabelLatency);
 
-        jLabelLatencyValue.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabelLatencyValue.setText("0");
-        jPanel1.add(jLabelLatencyValue);
+        jLabelConvolutionLatencyValue.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelConvolutionLatencyValue.setText("0");
+        jPanel1.add(jLabelConvolutionLatencyValue);
 
         jLabelLatencyUnit.setText(" ms");
         jPanel1.add(jLabelLatencyUnit);
+
+        jLabelLatency2.setLabelFor(jLabelConvolutionLatencyValue);
+        jLabelLatency2.setText("Total latency");
+        jPanel1.add(jLabelLatency2);
+
+        jLabelTotalLatencyValue.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelTotalLatencyValue.setText("0");
+        jPanel1.add(jLabelTotalLatencyValue);
+
+        jLabelLatencyUnit1.setText(" ms");
+        jPanel1.add(jLabelLatencyUnit1);
 
         jLabelWindowing.setLabelFor(jComboBoxWindowing);
         jLabelWindowing.setText("Windowing");
         jPanel1.add(jLabelWindowing);
 
-        jComboBoxWindowing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Rectangular (none)", "Triangular", "Welch", "Hanning", "Hamming", "Blackman", "Nuttall", "Blackman-Nuttall", "Blackman-Harris", "Flat top", "Gaussian*", "Tukey*", "Planck-Taper*", "DPSS/Slepian*", "Kaiser*", "Dolph–Chebyshev*", "Ultraspherical*", "Exponential/Poisson*", "Bartlett–Hann*", "Planck–Bessel*", "Hann-Poisson*", "Sinc/Lanczos*", " " }));
+        jComboBoxWindowing.setModel(new javax.swing.DefaultComboBoxModel(windowsList));
+        jComboBoxWindowing.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxWindowingItemStateChanged(evt);
+            }
+        });
         jPanel1.add(jComboBoxWindowing);
         jPanel1.add(filler2);
 
@@ -287,6 +375,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jMenuFile.add(jMenuSaveFilterImpulseResponse);
         jMenuFile.add(jSeparator1);
 
+        jMenuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         jMenuExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/log-out-icon20.png"))); // NOI18N
         jMenuExit.setText("Exit");
         jMenuExit.addActionListener(new java.awt.event.ActionListener() {
@@ -297,6 +386,19 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         jMenuFile.add(jMenuExit);
 
         jMenuBar1.add(jMenuFile);
+
+        jMenu1.setText("Edit");
+
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/reset-settings-icon-16x16.png"))); // NOI18N
+        jMenuItem1.setText("reset to default values");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu1);
 
         jMenuAbout.setText("About");
         jMenuBar1.add(jMenuAbout);
@@ -310,7 +412,9 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(166, 166, 166))
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -324,7 +428,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(29, 29, 29))
         );
 
         pack();
@@ -332,7 +436,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
 
     private void jComboBoxSamplingFrequencyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSamplingFrequencyActionPerformed
         checkFiltersMaxFcValues();
-        setFilterLatencyValue();
+        setLatencyValues();
     }//GEN-LAST:event_jComboBoxSamplingFrequencyActionPerformed
 
     private void jComboBoxFilterType1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFilterType1ActionPerformed
@@ -359,16 +463,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxFilterType1ActionPerformed
 
     private void jMenuSaveFilterImpulseResponseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSaveFilterImpulseResponseActionPerformed
-        try {
-            this.jSpinnerFilterLength.commitEdit();
-            this.jSpinnerHighPassFc.commitEdit();
-            this.jSpinnerHighPassOrder.commitEdit();
-            this.jSpinnerLowPassFc.commitEdit();
-            this.jSpinnerLowPassOrder.commitEdit();
-        }
-        catch(ParseException e) {
-            
-        }
+        commitEditSpinners();
         
         JFileChooser fs = new JFileChooser();
         fs.setDialogTitle("Save filter impulse response");
@@ -385,18 +480,30 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
                     int lpOrder = (int)this.jSpinnerLowPassOrder.getValue();
                     
                     int filterLength = (int)this.jSpinnerFilterLength.getValue();
-                    String filterTypeString = this.jComboBoxFilterType1.getSelectedItem().toString().toLowerCase();
-                    if(filterTypeString.contains("lowpass")) {
+                    String filterType1String = this.jComboBoxFilterType1.getSelectedItem().toString().toLowerCase();
+                    
+                    FilterTypeEnum hpFilterType2, lpFilterType2;
+                    String hpFilterType2String = this.jComboBoxFilterType2.getSelectedItem().toString();
+                    if(hpFilterType2String.equals("Butterworth")) hpFilterType2 = FilterTypeEnum.BUTTERWORTH;
+                    else if(hpFilterType2String.equals("Linkwitz-Riley")) hpFilterType2 = FilterTypeEnum.LINKWITZ_RILEY;
+                    else hpFilterType2 = FilterTypeEnum.UNDEFINED;
+                    
+                    String lpFilterType2String = this.jComboBoxFilterType2.getSelectedItem().toString();
+                    if(lpFilterType2String.equals("Butterworth")) lpFilterType2 = FilterTypeEnum.BUTTERWORTH;
+                    else if(lpFilterType2String.equals("Linkwitz-Riley")) lpFilterType2 = FilterTypeEnum.LINKWITZ_RILEY;
+                    else lpFilterType2 = FilterTypeEnum.UNDEFINED;
+                    
+                    if(filterType1String.contains("lowpass")) {
                         System.out.println("Saving lowpass filter :");
                         System.out.println("Fc = " + lpFc + " hz");
                         
-                        impulse = (new LowPassFilter(filterLength, samplingRate, lpFc, lpOrder)).getImpulse();
+                        impulse = (new LowPassFilter(filterLength, samplingRate, lpFc, lpOrder, lpFilterType2)).getImpulse();
                     }
-                    else if(filterTypeString.contains("highpass")) {
-                        impulse = (new HighPassFilter(filterLength, samplingRate, hpFc, hpOrder)).getImpulse();
+                    else if(filterType1String.contains("highpass")) {
+                        impulse = (new HighPassFilter(filterLength, samplingRate, hpFc, hpOrder, hpFilterType2)).getImpulse();
                     }
-                    else if(filterTypeString.contains("bandpass")) {
-                        impulse = (new BandPassFilter(filterLength, samplingRate, hpFc, hpOrder, lpFc, lpOrder)).getImpulse();
+                    else if(filterType1String.contains("bandpass")) {
+                        impulse = (new BandPassFilter(filterLength, samplingRate, hpFc, hpOrder, hpFilterType2, lpFc, lpOrder, lpFilterType2)).getImpulse();
                     }
                     else {
                         return;
@@ -483,7 +590,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuSaveFilterImpulseResponseActionPerformed
 
     private void jMenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExitActionPerformed
-        super.dispose();
+        exit();
     }//GEN-LAST:event_jMenuExitActionPerformed
 
     private void jSpinnerLowPassFcStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerLowPassFcStateChanged
@@ -494,30 +601,90 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         checkFiltersMaxFcValues();
     }//GEN-LAST:event_jSpinnerHighPassFcStateChanged
 
-    private void jSpinnerFilterLengthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerFilterLengthStateChanged
-        setFilterLatencyValue();
-    }//GEN-LAST:event_jSpinnerFilterLengthStateChanged
-
     private void jMenuFileStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jMenuFileStateChanged
-        try {
-            this.jSpinnerFilterLength.commitEdit();
-            this.jSpinnerHighPassFc.commitEdit();
-            this.jSpinnerHighPassOrder.commitEdit();
-            this.jSpinnerLowPassFc.commitEdit();
-            this.jSpinnerLowPassOrder.commitEdit();
-        }
-        catch(ParseException e) {
-            
-        }
+        commitEditSpinners();
     }//GEN-LAST:event_jMenuFileStateChanged
 
-    private void jSpinnerFilterLength1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerFilterLength1StateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerFilterLength1StateChanged
+    private void jSpinnerFilterGroupDelayStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerFilterGroupDelayStateChanged
+        setLatencyValues();
+    }//GEN-LAST:event_jSpinnerFilterGroupDelayStateChanged
 
     private void jComboBoxFilterType2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFilterType2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxFilterType2ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        exit();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        prefs.putInt("jComboBoxSamplingFrequency", 0);
+        
+        prefs.putInt("jComboBoxFilterType1", 0);
+        prefs.putInt("jComboBoxFilterType2", 0);
+        
+        prefs.putDouble("jSpinnerHighPassFc", 1.0);
+        prefs.putInt("jSpinnerHighPassOrder", 1);
+        prefs.putInt("jComboBoxHighPassFilterPhase", 0);
+        
+        prefs.putDouble("jSpinnerLowPassFc", 1.0);
+        prefs.putInt("jSpinnerLowPassOrder", 1);
+        prefs.putInt("jComboBoxLowPassFilterPhase", 0);
+        
+        prefs.putInt("jSpinnerFilterLength", 3);
+        prefs.putBoolean("jCheckBoxFilterLength", false);
+        prefs.putInt("jSpinnerFilterGroupDelay", 1);
+        prefs.putBoolean("jCheckBoxFilterGroupDelay", true);
+
+        prefs.putInt("jComboBoxWindowing", 0);
+        prefs.putDouble("jSpinnerWindowParam", 0.5);
+        
+        loadSettings();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jSpinnerFilterLengthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerFilterLengthStateChanged
+        SpinnerModel model = this.jSpinnerFilterGroupDelay.getModel();
+        if(model instanceof SpinnerNumberModel)
+        {
+            int maxValue = (int) this.jSpinnerFilterLength.getValue();
+            //int recommandedFilterLength = 1024;
+            int recommandedGroupDelay = maxValue/2;
+            ((SpinnerNumberModel)model).setMaximum(maxValue);
+            
+            if(this.jCheckBoxFilterGroupDelay.isSelected()) {
+                this.jSpinnerFilterGroupDelay.setValue(recommandedGroupDelay);
+            }
+            if(maxValue <= (int)jSpinnerFilterGroupDelay.getValue()) {
+                jSpinnerFilterGroupDelay.setValue(maxValue);
+            }
+        }
+    }//GEN-LAST:event_jSpinnerFilterLengthStateChanged
+
+    private void jComboBoxWindowingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxWindowingItemStateChanged
+        
+    }//GEN-LAST:event_jComboBoxWindowingItemStateChanged
+
+    private void jSpinnerFilterLengthFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSpinnerFilterLengthFocusGained
+       Object src = evt.getSource();
+       //System.out.println("Focus gained for : " + src);
+
+       if (src instanceof JSpinner) // sanity check
+       {
+            //System.out.println("... select all later");
+            SwingUtilities.invokeLater(  new selectlater( (JSpinner) src )  );
+       }
+    }//GEN-LAST:event_jSpinnerFilterLengthFocusGained
+
+    private void jSpinnerFilterGroupDelayFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSpinnerFilterGroupDelayFocusGained
+       Object src = evt.getSource();
+       //System.out.println("Focus gained for : " + src);
+
+       if (src instanceof JSpinner) // sanity check
+       {
+            //System.out.println("... select all later");
+            SwingUtilities.invokeLater(  new selectlater( (JSpinner) src )  );
+       }
+    }//GEN-LAST:event_jSpinnerFilterGroupDelayFocusGained
 
     private void checkFiltersMaxFcValues() {
         double hpFcValue = (double)jSpinnerHighPassFc.getValue();
@@ -533,29 +700,107 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
         if(lpFcValue > fcMax) jSpinnerLowPassFc.setValue(fcMax);
     }
     
-    private void setFilterLatencyValue() {
+    private void setLatencyValues() {
         double samplingRate = Double.parseDouble(this.jComboBoxSamplingFrequency.getSelectedItem().toString());
         int filterLength = (int)this.jSpinnerFilterLength.getValue();
-        double filterLatency = (filterLength-1.0)*1000.0/(2.0*samplingRate);
-        this.jLabelLatencyValue.setText(String.format("%1$,.4f", filterLatency));
+        int filterGroupDelay = (int)this.jSpinnerFilterGroupDelay.getValue();
+        double convolutionLatency = (filterLength-1.0)*1000.0/(2.0*samplingRate);
+        double totalLatency = filterGroupDelay*1000.0/(2.0*samplingRate) + convolutionLatency;
+        this.jLabelConvolutionLatencyValue.setText(String.format("%1$,.4f", convolutionLatency));
+        this.jLabelTotalLatencyValue.setText(String.format("%1$,.4f", totalLatency));
     }
     
     private void setLowPassFilterEnabled(boolean value) {
         this.jSpinnerLowPassFc.setEnabled(value);
         this.jSpinnerLowPassOrder.setEnabled(value);
-        this.jComboBoxLowPassFilterPhase.setEnabled(value);
+        //this.jComboBoxLowPassFilterPhase.setEnabled(value);
         this.jLabelLowPassFc.setEnabled(value);
         this.jLabelLowPassOrder.setEnabled(value);
-        this.jLabelLowPassFilterPhase.setEnabled(value);
+        //this.jLabelLowPassFilterPhase.setEnabled(value);
     }
     
     private void setHighPassFilterEnabled(boolean value) {
         this.jSpinnerHighPassFc.setEnabled(value);
         this.jSpinnerHighPassOrder.setEnabled(value);
-        this.jComboBoxHighPassFilterPhase.setEnabled(value);
+        //this.jComboBoxHighPassFilterPhase.setEnabled(value);
         this.jLabelHighPassFc.setEnabled(value);
         this.jLabelHighPassOrder.setEnabled(value);
-        this.jLabelHighPassFilterPhase.setEnabled(value);
+        //this.jLabelHighPassFilterPhase.setEnabled(value);
+    }
+    
+    private void loadSettings() {
+        this.jComboBoxSamplingFrequency.setSelectedIndex(prefs.getInt("jComboBoxSamplingFrequency",0));
+        
+        this.jComboBoxFilterType1.setSelectedIndex(prefs.getInt("jComboBoxFilterType1", 0));
+        this.jComboBoxFilterType2.setSelectedIndex(prefs.getInt("jComboBoxFilterType2", 0));
+        
+        this.jSpinnerHighPassFc.setValue(prefs.getDouble("jSpinnerHighPassFc", 1));
+        this.jSpinnerHighPassOrder.setValue(prefs.getInt("jSpinnerHighPassOrder",1));
+        this.jComboBoxHighPassFilterPhase.setSelectedIndex(prefs.getInt("jComboBoxHighPassFilterPhase",0));
+        
+        this.jSpinnerLowPassFc.setValue(prefs.getDouble("jSpinnerLowPassFc", 1));
+        this.jSpinnerLowPassOrder.setValue(prefs.getInt("jSpinnerLowPassOrder",1));
+        this.jComboBoxLowPassFilterPhase.setSelectedIndex(prefs.getInt("jComboBoxLowPassFilterPhase",0));
+                
+        this.jSpinnerFilterLength.setValue(prefs.getInt("jSpinnerFilterLength",2));
+        this.jCheckBoxFilterLength.setSelected(prefs.getBoolean("jCheckBoxFilterLength",true));
+        this.jSpinnerFilterGroupDelay.setValue(prefs.getInt("jSpinnerFilterGroupDelay", 0));
+        this.jCheckBoxFilterGroupDelay.setSelected(prefs.getBoolean("jCheckBoxFilterGroupDelay",true));
+                
+       // this.jLabelLatencyValue.setText(prefs.get("jLabelLatencyValue", ""));
+        
+        this.jComboBoxWindowing.setSelectedIndex(prefs.getInt("jComboBoxWindowing",0));
+        this.jSpinnerWindowParam.setValue(prefs.getDouble("jSpinnerWindowParam", 0.5));
+    }
+    
+    private void saveSettings() {
+        prefs.putInt("jComboBoxSamplingFrequency", this.jComboBoxSamplingFrequency.getSelectedIndex());
+        
+        prefs.putInt("jComboBoxFilterType1", this.jComboBoxFilterType1.getSelectedIndex());
+        prefs.putInt("jComboBoxFilterType2", this.jComboBoxFilterType2.getSelectedIndex());
+        
+        prefs.putDouble("jSpinnerHighPassFc", Double.parseDouble(this.jSpinnerHighPassFc.getValue().toString()));
+        prefs.putInt("jSpinnerHighPassOrder", Integer.parseInt(this.jSpinnerHighPassOrder.getValue().toString()));
+        prefs.putInt("jComboBoxHighPassFilterPhase", this.jComboBoxHighPassFilterPhase.getSelectedIndex());
+        
+        prefs.putDouble("jSpinnerLowPassFc", Double.parseDouble(this.jSpinnerLowPassFc.getValue().toString()));
+        prefs.putInt("jSpinnerLowPassOrder", Integer.parseInt(this.jSpinnerLowPassOrder.getValue().toString()));
+        prefs.putInt("jComboBoxLowPassFilterPhase", this.jComboBoxLowPassFilterPhase.getSelectedIndex());
+        
+        prefs.putInt("jSpinnerFilterLength", Integer.parseInt(this.jSpinnerFilterLength.getValue().toString()));
+        prefs.putBoolean("jCheckBoxFilterLength", this.jCheckBoxFilterLength.isSelected());
+        prefs.putInt("jSpinnerFilterGroupDelay", Integer.parseInt(this.jSpinnerFilterGroupDelay.getValue().toString()));
+        prefs.putBoolean("jCheckBoxFilterGroupDelay", this.jCheckBoxFilterGroupDelay.isSelected());
+        
+       // prefs.put("jLabelLatencyValue", this.jLabelLatencyValue.getText());
+        
+        prefs.putInt("jComboBoxWindowing", this.jComboBoxWindowing.getSelectedIndex());
+        prefs.putDouble("jSpinnerWindowParam", Double.parseDouble(this.jSpinnerWindowParam.getValue().toString()));
+    }
+    
+    private void commitEditSpinners() {
+        try {
+            this.jSpinnerHighPassFc.commitEdit();
+            this.jSpinnerHighPassOrder.commitEdit();
+            
+            this.jSpinnerLowPassFc.commitEdit();
+            this.jSpinnerLowPassOrder.commitEdit();
+            
+            this.jSpinnerFilterLength.commitEdit();
+            this.jSpinnerFilterGroupDelay.commitEdit();
+            
+            this.jSpinnerWindowParam.commitEdit();
+        }
+        catch(ParseException e) {
+            
+        }
+    }
+    
+    private void exit() {
+        if(DEBUG_MODE) System.out.println("Exiting...");
+        commitEditSpinners();
+        saveSettings();
+        super.dispose();
     }
     
     /**
@@ -584,7 +829,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(FreeFirFilterGeneratorForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -598,8 +843,8 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler4;
     private javax.swing.Box.Filler filler5;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBox jCheckBoxFilterGroupDelay;
+    private javax.swing.JCheckBox jCheckBoxFilterLength;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBoxFilterType1;
     private javax.swing.JComboBox jComboBoxFilterType2;
@@ -609,6 +854,7 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JComboBox jComboBoxWindowing;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelConvolutionLatencyValue;
     private javax.swing.JLabel jLabelFilterLength;
     private javax.swing.JLabel jLabelFilterType;
     private javax.swing.JLabel jLabelHighPassFc;
@@ -616,17 +862,21 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelHighPassOrder;
     private javax.swing.JLabel jLabelLatency;
     private javax.swing.JLabel jLabelLatency1;
+    private javax.swing.JLabel jLabelLatency2;
     private javax.swing.JLabel jLabelLatencyUnit;
-    private javax.swing.JLabel jLabelLatencyValue;
+    private javax.swing.JLabel jLabelLatencyUnit1;
     private javax.swing.JLabel jLabelLowPassFc;
     private javax.swing.JLabel jLabelLowPassFilterPhase;
     private javax.swing.JLabel jLabelLowPassOrder;
     private javax.swing.JLabel jLabelSamplingFrequency;
+    private javax.swing.JLabel jLabelTotalLatencyValue;
     private javax.swing.JLabel jLabelWindowing;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenuAbout;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuExit;
     private javax.swing.JMenu jMenuFile;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuSaveFilterImpulseResponse;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
@@ -637,8 +887,8 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JSpinner jSpinnerFilterGroupDelay;
     private javax.swing.JSpinner jSpinnerFilterLength;
-    private javax.swing.JSpinner jSpinnerFilterLength1;
     private javax.swing.JSpinner jSpinnerHighPassFc;
     private javax.swing.JSpinner jSpinnerHighPassOrder;
     private javax.swing.JSpinner jSpinnerLowPassFc;
@@ -646,4 +896,19 @@ public class FreeFirFilterGeneratorForm extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerWindowParam;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
+
+    private static class selectlater implements Runnable
+    {
+        JSpinner comp;
+        selectlater(JSpinner src)
+        {
+            comp = src;
+        }
+        public void run()
+        {
+            //System.out.println(" ... select all now");
+            //System.out.println("Selecting text : " + ((JSpinner.DefaultEditor)comp.getEditor()).getTextField().getText());
+            ((JSpinner.NumberEditor)comp.getEditor()).getTextField().selectAll();
+        }
+    }
 }

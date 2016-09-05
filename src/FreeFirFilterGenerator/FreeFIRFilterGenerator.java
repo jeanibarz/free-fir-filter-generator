@@ -10,16 +10,23 @@ package freefirfiltergenerator;
  * @author Jean
  */
 public class FreeFIRFilterGenerator {
-
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        /* Check if debugging mode */
+        if(args.length >= 1 && args[0].equals("-debug")) {
+            FreeFirFilterGeneratorForm.DEBUG_MODE = true;
+            System.out.println("Debugging mode...");
+        }
+        
         FreeFirFilterGeneratorForm mainForm = new FreeFirFilterGeneratorForm();
 
-        double[] w = freefirfiltergenerator.Window.triangular(10);
-        
-        for(int i = 0; i < w.length; i++) System.out.println("W[" + i + "]=" + w[i]);
+        if(FreeFirFilterGeneratorForm.DEBUG_MODE) {
+            double[] w = freefirfiltergenerator.Window.triangular(10);
+
+            for(int i = 0; i < w.length; i++) System.out.println("W[" + i + "]=" + w[i]);
+        }
         
         mainForm.setVisible(true);
     }
